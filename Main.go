@@ -74,6 +74,21 @@ func updateUser(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
+func deleteUser(c echo.Context) error {
+	db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
+        if err != nil {
+                log.Panic(err)
+        }
+
+        defer db.Close()
+
+        var user User
+
+	id := c.Param("id")
+	db.Where("id=?",id).Find(&user).Delete(&user)
+	return c.JSON(http.StatusOK, user)
+}
+
 func main() {
 
         //db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=test password=ujangbedil sslmode=disable")
@@ -94,7 +109,7 @@ func main() {
         e.POST("/users", createUser)
         e.GET("/users/:id", getUser)
         e.PUT("/users/:id", updateUser)
-        //e.DELETE("/users/:id", deleteUser)
+        e.DELETE("/users/:id", deleteUser)
 
         // Start server
         e.Logger.Fatal(e.Start(":1323"))

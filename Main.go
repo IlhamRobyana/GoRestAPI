@@ -54,6 +54,26 @@ func getUser(c echo.Context) error {
 	db.Where("id=?", id).Find(&user)
 	return c.JSON(http.StatusOK, user)
 }
+
+func updateUser(c echo.Context) error {
+	db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
+        if err != nil {
+                log.Panic(err)
+        }
+
+        defer db.Close()
+
+	var user User
+
+	if err:= c.Bind(&user); err != nil {
+		return err
+	}
+	id := c.Param("id")
+	attrMap := map[string]interface{}{"first_name": user.First_name,"last_name": user.Last_name, "age": user.Age, "email": user.Email}
+	db.Model(&user).Where("id=?", id).Updates(attrMap)
+	return c.NoContent(http.StatusOK)
+}
+
 func main() {
 
         //db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=test password=ujangbedil sslmode=disable")
@@ -73,7 +93,7 @@ func main() {
         // Routes
         e.POST("/users", createUser)
         e.GET("/users/:id", getUser)
-        //e.PUT("/users/:id", updateUser)
+        e.PUT("/users/:id", updateUser)
         //e.DELETE("/users/:id", deleteUser)
 
         // Start server

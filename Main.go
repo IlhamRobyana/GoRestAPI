@@ -2,12 +2,12 @@ package main
 
 import (
         "net/http"
-        "strconv"
+        _ "strconv"
         "log"
-	"fmt"
-	"database/sql"
+	_ "fmt"
+	_ "database/sql"
 
-        //"github.com/jinzhu/gorm"
+        "github.com/jinzhu/gorm"
         _ "github.com/lib/pq"
         "github.com/labstack/echo"
         "github.com/labstack/echo/middleware"
@@ -27,30 +27,32 @@ type Users struct {
 
 func createUser(c echo.Context) error {
 
-        db, err := sql.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
+        db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
         if err != nil {
                 log.Panic(err)
         }
 
-        //defer db.Close()
+        defer db.Close()
 
         user := new(User)
         if err := c.Bind(user); err != nil {
                 return err
         }
-	fmt.Println(user.First_name)
-	age, _ := strconv.ParseInt(user.Age,10,64)
-	sqlStatement := "INSERT INTO users (first_name, last_name, age, email) VALUES ($1, $2, $3, $4)"
-	res, err := db.Query(sqlStatement, user.First_name, user.Last_name, age, user.Email)
-        if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(res)
-		return c.JSON(http.StatusCreated, user)
+	db.Create(&user)
+        return c.String(http.StatusOK, "ok")
+}
+
+func getUser(c echo.Context) error {
+	db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
+	if err != nil {
+		log.Panic(err)
 	}
 
-	//db.Create(&user)
-        return c.String(http.StatusOK, "ok")
+	defer db.Close()
+	var user User
+	id := c.Param("id")
+	db.Where("id=?", id).Find(&user)
+	return c.JSON(http.StatusOK, user)
 }
 func main() {
 
@@ -70,7 +72,7 @@ func main() {
 
         // Routes
         e.POST("/users", createUser)
-        //e.GET("/users/:id", getUser)
+        e.GET("/users/:id", getUser)
         //e.PUT("/users/:id", updateUser)
         //e.DELETE("/users/:id", deleteUser)
 

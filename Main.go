@@ -28,14 +28,6 @@ type Users struct {
 var DB *gorm.DB
 
 func createUser(c echo.Context) error {
-
-        //db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-        //if err != nil {
-          //      log.Panic(err)
-        //}
-
-        //defer db.Close()
-
         user := new(User)
         if err := c.Bind(user); err != nil {
                 return err
@@ -45,12 +37,6 @@ func createUser(c echo.Context) error {
 }
 
 func getUser(c echo.Context) error {
-	//db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-	//if err != nil {
-	//	log.Panic(err)
-	//}
-
-	//defer db.Close()
 	var user User
 	id := c.Param("id")
 	DB.Where("id=?", id).Find(&user)
@@ -58,25 +44,12 @@ func getUser(c echo.Context) error {
 }
 
 func getAllUsers(c echo.Context) error {
-	//db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-        //if err != nil {
-          //      log.Panic(err)
-        //}
-
-        //defer db.Close()
 	var users []User
 	DB.Find(&users)
 	return c.JSON(http.StatusOK, users)
 }
 
 func updateUser(c echo.Context) error {
-	//db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-        //if err != nil {
-          //      log.Panic(err)
-        //}
-
-        //defer db.Close()
-
 	var user User
 
 	if err:= c.Bind(&user); err != nil {
@@ -89,12 +62,6 @@ func updateUser(c echo.Context) error {
 }
 
 func deleteUser(c echo.Context) error {
-	//db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-        //if err != nil {
-          //      log.Panic(err)
-        //}
-
-        //defer db.Close()
 
         var user User
 

@@ -25,56 +25,31 @@ type Users struct {
 	Users []User `json:"users"`
 }
 
+var DB *gorm.DB
+
 func createUser(c echo.Context) error {
-
-        db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-        if err != nil {
-                log.Panic(err)
-        }
-
-        defer db.Close()
-
         user := new(User)
         if err := c.Bind(user); err != nil {
                 return err
         }
-	db.Create(&user)
+	DB.Create(&user)
         return c.String(http.StatusOK, "ok")
 }
 
 func getUser(c echo.Context) error {
-	db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-	if err != nil {
-		log.Panic(err)
-	}
-
-	defer db.Close()
 	var user User
 	id := c.Param("id")
-	db.Where("id=?", id).Find(&user)
+	DB.Where("id=?", id).Find(&user)
 	return c.JSON(http.StatusOK, user)
 }
 
 func getAllUsers(c echo.Context) error {
-	db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-        if err != nil {
-                log.Panic(err)
-        }
-
-        defer db.Close()
 	var users []User
-	db.Find(&users)
+	DB.Find(&users)
 	return c.JSON(http.StatusOK, users)
 }
 
 func updateUser(c echo.Context) error {
-	db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-        if err != nil {
-                log.Panic(err)
-        }
-
-        defer db.Close()
-
 	var user User
 
 	if err:= c.Bind(&user); err != nil {
@@ -82,33 +57,28 @@ func updateUser(c echo.Context) error {
 	}
 	id := c.Param("id")
 	attrMap := map[string]interface{}{"first_name": user.First_name,"last_name": user.Last_name, "age": user.Age, "email": user.Email}
-	db.Model(&user).Where("id=?", id).Updates(attrMap)
+	DB.Model(&user).Where("id=?", id).Updates(attrMap)
 	return c.NoContent(http.StatusOK)
 }
 
 func deleteUser(c echo.Context) error {
-	db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
-        if err != nil {
-                log.Panic(err)
-        }
-
-        defer db.Close()
 
         var user User
 
 	id := c.Param("id")
-	db.Where("id=?",id).Find(&user).Delete(&user)
+	DB.Where("id=?",id).Find(&user).Delete(&user)
 	return c.JSON(http.StatusOK, user)
 }
 
 func main() {
 
-        //db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=test password=ujangbedil sslmode=disable")
-        //if err != nil {
-          //      log.Panic(err)
-        //}
+	var err error
+        DB, err = gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
+        if err != nil {
+                log.Panic(err)
+        }
 
-        //defer db.Close()
+	defer DB.Close()
         //db.AutoMigrate(&User{})
 
         e := echo.New()

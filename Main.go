@@ -55,6 +55,18 @@ func getUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
+func getAllUsers(c echo.Context) error {
+	db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
+        if err != nil {
+                log.Panic(err)
+        }
+
+        defer db.Close()
+	var users []User
+	db.Find(&users)
+	return c.JSON(http.StatusOK, users)
+}
+
 func updateUser(c echo.Context) error {
 	db, err := gorm.Open("postgres","host=localhost port=5432 user=postgres dbname=restapi_test password=ujangbedil sslmode=disable")
         if err != nil {
@@ -108,6 +120,7 @@ func main() {
         // Routes
         e.POST("/users", createUser)
         e.GET("/users/:id", getUser)
+	e.GET("/users", getAllUsers)
         e.PUT("/users/:id", updateUser)
         e.DELETE("/users/:id", deleteUser)
 

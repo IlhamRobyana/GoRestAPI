@@ -1,11 +1,17 @@
 package main
 
 import (
-	controller "gorestapi/controllers"
+        "log"
+		"fmt"
+		"os"
 
-	_"github.com/lib/pq"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+		controller "gorestapi/controllers"
+
+        "github.com/joho/godotenv"
+		"github.com/jinzhu/gorm"
+		_"github.com/lib/pq"
+        "github.com/labstack/echo"
+        "github.com/labstack/echo/middleware"
 )
 
 func main() {

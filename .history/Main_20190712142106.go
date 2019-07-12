@@ -1,11 +1,11 @@
 package main
 
 import (
-	controller "gorestapi/controllers"
+		controller "gorestapi/controllers"
 
-	_"github.com/lib/pq"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+		_"github.com/lib/pq"
+        "github.com/labstack/echo"
+        "github.com/labstack/echo/middleware"
 )
 
 func main() {

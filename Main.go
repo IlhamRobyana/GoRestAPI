@@ -92,7 +92,7 @@ func main() {
         }
 
 	defer DB.Close()
-        //db.AutoMigrate(&User{})
+	DB.AutoMigrate(&User{})
 
         e := echo.New()
 
